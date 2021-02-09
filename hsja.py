@@ -143,11 +143,16 @@ def decision_function(model, images, params):
 	0 otherwise.
 	"""
 	images = clip_image(images, params['clip_min'], params['clip_max'])
-	prob = model.predict(images)
+	y_pred = model.predict(images)
 	if params['target_label'] is None:
-		return np.argmax(prob, axis = 1) != params['original_label'] 
+		return y_pred != params['original_label'] and y_pred > 0
 	else:
-		return np.argmax(prob, axis = 1) == params['target_label']
+		return y_pred == params['target_label']
+	# prob = model.predict(images)
+	# if params['target_label'] is None:
+	# 	return np.argmax(prob, axis = 1) != params['original_label']
+	# else:
+	# 	return np.argmax(prob, axis = 1) == params['target_label']
 
 def clip_image(image, clip_min, clip_max):
 	# Clip an image, or an image batch, with upper and lower threshold.

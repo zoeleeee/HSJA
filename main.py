@@ -18,10 +18,9 @@ def construct_model_and_data(args):
 	Load model and data on which the attack is carried out.
 	Assign target classes and images for targeted attack.
 	"""
-	data_model = args.dataset_name + args.model_name
+	data_model = args.method + '/' + args.dataset_name + args.model_name
 	dataset = ImageData(args.dataset_name)
 	x_test, y_test = dataset.x_val, dataset.y_val
-	reference = - dataset.x_train_mean
 	model = ImageModel(args.model_name, args.dataset_name, 
 		train = False, load = True)
 
@@ -69,7 +68,7 @@ def attack(args):
 		target_images = outputs['target_images']
 
 	for i, sample in enumerate(x_test[:args.num_samples]):
-		label = np.argmax(y_test[i])
+		label = y_test[i]#np.argmax(y_test[i])
 
 		if args.attack_type == 'targeted':
 			target_label = target_labels[i]
@@ -100,6 +99,10 @@ def attack(args):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
+
+	parser.add_argument('--method', type = str, 
+		choices = ['hamming', 'euclidean'], 
+		default = 'hamming') 
 
 	parser.add_argument('--dataset_name', type = str, 
 		choices = ['cifar10'], 
