@@ -3,7 +3,7 @@ import numpy as np
 class ImageData():
     def __init__(self, dataset_name):
         if dataset_name == 'mnist': 
-            
+            print('To-Do')
 
         elif dataset_name == 'cifar10': 
             x_train = np.load('../cifar_update/data/cifar10_train_data.npy')
