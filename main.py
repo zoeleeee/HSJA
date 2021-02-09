@@ -1,11 +1,10 @@
 from __future__ import absolute_import, division, print_function 
 
 
-from build_model import ImageModel 
-from load_data import ImageData, split_data
+from mine.model import ImageModel 
+from mine.load_data import ImageData, split_data
 from hsja import hsja
 import numpy as np
-import tensorflow as tf
 import sys
 import os
 import pickle
