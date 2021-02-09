@@ -1,5 +1,5 @@
-from dataset import encode
-from distance import hamming, euclidean
+from mine.dataset import encode
+from mine.distance import hamming, euclidean
 import torch 
 
 class ImageModel():
