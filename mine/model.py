@@ -13,7 +13,11 @@ class ImageModel():
         print('Load network...')
         self.nb_model = 3
         model_file_form = '../cifar_update/models/cifar10/256.32_cifar10_5_{}.pt'
-        self.models = [torch.load(model_file_form.format(i)).eval() for i in range(self.nb_model)]
+        self.models = []
+        for i in range(self.nb_model):
+            model = torch.load(model_file_form.format(i))
+            model = torch.nn.DataParallel(model).cuda()
+            self.models.append(model.eval())
 
         self.label_reps = []
         for i in range(self.nb_model):
@@ -33,7 +37,7 @@ class ImageModel():
         scores = []
         for i in range(len(self.models)):
             xx = encode(x, i, 32, 0)
-            scores.append(self.models[i](torch.Tensor(xx).cuda()).detach().cpu().numpy())
+            scores.append(self.models[i](torch.Tensor(xx).cuda(), 1).detach().cpu().numpy())
         scores = np.hstack(scores)
 
         if metric == 'hamming': dists, _, _ = hamming(scores, 0.9, self.label_reps, y)
