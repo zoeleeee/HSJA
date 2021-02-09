@@ -11,6 +11,11 @@ class ImageData():
 			x_test = np.load('../cifar_update/data/cifar10_test_data.npy')
 			y_test = np.load('../cifar_update/data/cifar10_test_label.npy')
 
+		x_train = x_train.astype('float32')/255
+		x_val = x_val.astype('float32')/255
+		self.clip_min = 0.0
+		self.clip_max = 1.0
+
 		self.x_train = x_train
 		self.x_val = x_test
 		self.y_train = y_train

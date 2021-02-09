@@ -21,9 +21,11 @@ class ImageModel():
             self.label_reps.append(np.random.permutation(np.load('data/5_label_permutation.npy')))
 	    self.label_reps = np.hstack(self.label_reps)
 
-	def predict(self, x, y, metric='hamming'):
+	def predict(self, x, y=0, metric='hamming'):
 		assert metric in ['hamming', 'euclidean']
 
+		if np.max(x) <= 1:
+			x = (x*255).astype(np.uint8)
 		if len(x.shape) == 3:
 			x = np.expand_dims(x, axis=0)
 		assert len(x.shape)==4, 'x shape {} error'.format(x.shape)

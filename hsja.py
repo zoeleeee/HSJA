@@ -144,6 +144,7 @@ def decision_function(model, images, params):
 	"""
 	images = clip_image(images, params['clip_min'], params['clip_max'])
 	y_pred = model.predict(images)
+	print(y_pred, params['original_label'].shape)
 	if params['target_label'] is None:
 		return y_pred != params['original_label'] and y_pred > 0
 	else:
