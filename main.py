@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function 
 
 
-from mine.model import ImageModel 
+from mine.build_model import ImageModel 
 from mine.load_data import ImageData, split_data
 from hsja import hsja
 import numpy as np
