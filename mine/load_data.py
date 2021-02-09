@@ -8,8 +8,8 @@ class ImageData():
         elif dataset_name == 'cifar10': 
             x_train = np.load('../cifar_update/data/cifar10_train_data.npy')
             y_train = np.load('../cifar_update/data/cifar10_train_label.npy')
-            x_test = np.load('../cifar_update/data/cifar10_test_data.npy')
-            y_test = np.load('../cifar_update/data/cifar10_test_label.npy')
+            x_val = np.load('../cifar_update/data/cifar10_test_data.npy')
+            y_val = np.load('../cifar_update/data/cifar10_test_label.npy')
 
         x_train = x_train.astype('float32')/255
         x_val = x_val.astype('float32')/255
@@ -17,9 +17,9 @@ class ImageData():
         self.clip_max = 1.0
 
         self.x_train = x_train
-        self.x_val = x_test
+        self.x_val = x_val
         self.y_train = y_train
-        self.y_val = y_test
+        self.y_val = y_val
 
 def split_data(x, y, model, num_classes = 10, split_rate = 0.8, sample_per_class = 100):
     np.random.seed(10086)
