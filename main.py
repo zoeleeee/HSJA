@@ -1,7 +1,9 @@
 from __future__ import absolute_import, division, print_function 
 
-from mine.build_model import ImageModel 
-from mine.load_data import ImageData, split_data
+# from mine.build_model import ImageModel 
+# from mine.load_data import ImageData, split_data
+from gat.generative_model import ImageModel 
+from gat.generative_data import ImageData, split_data
 from hsja import hsja
 import numpy as np
 import sys
