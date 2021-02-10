@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function 
 
-
 from mine.build_model import ImageModel 
 from mine.load_data import ImageData, split_data
 from hsja import hsja
@@ -20,7 +19,7 @@ def construct_model_and_data(args):
     data_model = args.method + '/' + args.dataset_name + args.model_name
     dataset = ImageData(args.dataset_name)
     x_test, y_test = dataset.x_val, dataset.y_val
-    model = ImageModel(args.model_name, args.dataset_name, 
+    model = ImageModel(args.model_name, args.dataset_name, args.accuracy,
         train = False, load = True)
 
     # Split the test dataset into two parts.
@@ -123,7 +122,9 @@ if __name__ == '__main__':
         default = 10) 
 
     parser.add_argument('--num_iterations', type = int, 
-        default = 64) 
+        default = 64)
+    parser.add_argument('--accuracy', type = float, 
+        default = 64)  
     parser.add_argument('--stepsize_search', type = str, 
         choices = ['geometric_progression', 'grid_search'], 
         default = 'geometric_progression')
