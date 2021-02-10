@@ -10,7 +10,6 @@ class ImageModel():
         self.framework = 'pytorch'
         self.num_classes = 10
         self.metric = 'euclidean'
-        self.th = 
 
         print('Load network...')
         self.nb_model = 3
