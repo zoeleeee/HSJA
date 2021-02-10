@@ -1,6 +1,7 @@
-from dataset import encode
-from distance import hamming, euclidean
+from mine.dataset import encode
+from mine.distance import hamming, euclidean
 import torch 
+import numpy as np
 
 class ImageModel():
     def __init__(self, model_name, dataset_name, train = False, load = False, **kwargs):
@@ -22,7 +23,7 @@ class ImageModel():
         self.label_reps = []
         for i in range(self.nb_model):
             np.random.seed(i*5)
-            self.label_reps.append(np.random.permutation(np.load('data/5_label_permutation.npy')))
+            self.label_reps.append(np.random.permutation(np.load('../cifar_update/data/5_label_permutation.npy')))
         self.label_reps = np.hstack(self.label_reps)
 
     def predict(self, x, y=0, metric='hamming'):
