@@ -1,5 +1,5 @@
 import numpy as np
-from distance import hamming, euclidean
+from mine.distance import hamming, euclidean
 
 class ImageData():
     def __init__(self, dataset_name):

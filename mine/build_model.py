@@ -27,15 +27,16 @@ class ImageModel():
             self.label_reps.append(np.random.permutation(np.load('../cifar_update/data/5_label_permutation.npy')))
         self.label_reps = np.hstack(self.label_reps)
 
-        self.th, self.acc = initialize_threshold(accuracy)
+        self.th, self.acc = self.initialize_threshold(accuracy)
 
     def initialize_threshold(self, accuracy):
         scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_art_test.npy')
         y = np.load('../cifar_update/data/cifar10_art_test_label.npy')
-        if model.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, self.label_reps, y)
-        elif model.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, self.label_reps, y)
+        if self.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, self.label_reps, y)
+        elif self.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, self.label_reps, y)
         for ith in sorted(pred_dists):
-            acc = np.sum(pred_dists[correct_idx] <= ith) / len(x)
+            acc = np.sum(pred_dists[correct_idx] <= ith) / len(scores)
+            print(ith, acc)
             if acc >= accuracy:
                 return ith, acc
 
