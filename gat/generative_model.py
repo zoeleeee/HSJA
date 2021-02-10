@@ -30,7 +30,7 @@ class ImageModel():
 
     def predict(self, x):
         logits = self.bayes_classifier.forward(x)
-    	logits = bayes_classifier.batched_run(logits, x, self.sess)
+        logits = bayes_classifier.batched_run(logits, x, self.sess)
         preds = np.argmax(logits, axis=1)
         p_x = np.max(logits, axis=1)
         preds[p_x>th] = -1
