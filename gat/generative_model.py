@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from gat.model import Model, BayesClassifier
-from eval_utils import *
+from gat.eval_utils import *
 from art.utils import load_cifar10
 
 class ImageModel():
@@ -25,13 +25,13 @@ class ImageModel():
     def initialize_threshold(self, x, y, accuracy):
         ths = self.bayes_classifier.logit_ths
         nat_accs = self.bayes_classifier.nat_accs(x, y, self.sess)
-        idx = (np.abs(nat_accs - accuracy)).argmin()
+        idx = (np.abs(np.array(nat_accs) - accuracy)).argmin()
         return nat_accs[idx], ths[idx]
 
     def predict(self, x):
         logits = self.bayes_classifier.forward(x)
-        logits = bayes_classifier.batched_run(logits, x, self.sess)
+        logits = self.bayes_classifier.batched_run(logits, x, self.sess)
         preds = np.argmax(logits, axis=1)
         p_x = np.max(logits, axis=1)
-        preds[p_x>th] = -1
+        preds[p_x>self.th] = -1
         return preds
