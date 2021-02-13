@@ -38,7 +38,7 @@ class ImageModel():
         return nat_accs[idxs], logit_threshs[idxs]
 
     def predict(self, x):
-    	nat_preds = batched_run(classifier.predictions, classifier.x_input, x, sess)
-    	det_logits = get_det_logits(x, nat_preds, detectors, sess)
+        nat_preds = batched_run(classifier.predictions, classifier.x_input, x, sess)
+        det_logits = get_det_logits(x, nat_preds, detectors, sess)
         nat_preds[det_logits<= self.th] = -1
-    	return nat_preds
+        return nat_preds
