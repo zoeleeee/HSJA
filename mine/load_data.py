@@ -9,8 +9,8 @@ class ImageData():
         elif dataset_name == 'cifar10': 
             x_train = np.load('../cifar_update/data/cifar10_train_data.npy')
             y_train = np.load('../cifar_update/data/cifar10_train_label.npy')
-            x_val = np.load('../cifar_update/data/cifar10_art_test_data.npy')
-            y_val = np.load('../cifar_update/data/cifar10_art_test_label.npy')
+            x_val = np.load('../cifar_update/data/cifar10_test_data.npy')
+            y_val = np.load('../cifar_update/data/cifar10_test_label.npy')
 
         if np.max(x_train) > 1: x_train = x_train.astype('float32')/255
         if np.max(x_val) > 1: x_val = x_val.astype('float32')/255
@@ -24,13 +24,13 @@ class ImageData():
 
 def split_data(x, y, model, num_classes = 10, split_rate = 0.8, sample_per_class = 100):
     np.random.seed(10086)
-    scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_art_test.npy')
+    scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_cifar10_test.npy')
     if model.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, model.label_reps, y)
-    elif model.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, mdoel.label_reps, y)
+    elif model.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, model.label_reps, y)
     correct_idx = correct_idx[pred_dists[correct_idx] <= model.th]
-    print('Accuracy is {}'.format(np.mean(correct_idx)))
+    print('Accuracy is {}'.format(len(correct_idx)/len(x)))
     x, y = x[correct_idx], y[correct_idx]
-    label_pred = label_pred[correct_idx]
+    label_pred = y
 
     x_train, x_test, y_train, y_test = [], [], [], []
     for class_id in range(num_classes):

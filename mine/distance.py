@@ -70,7 +70,6 @@ def hamming_idxs(scores, config, t, dataset, label_path='data/cifar10_test_label
 
 def euclidean(scores, t, rep, labels):
     nat_labels = scores#np.zeros(scores.shape).astype(np.float32)
-    rep[rep==0] = -1
     preds, preds_dist, preds_score = [], [], []
 
     for i in range(len(nat_labels)):
