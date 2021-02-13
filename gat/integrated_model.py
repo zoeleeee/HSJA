@@ -2,7 +2,8 @@ import tensorflow as tf
 import numpy as np
 from gat.model import Model, BayesClassifier
 from gat.eval_utils import *
-from art.utils import load_cifar10
+import gat.cifar10_input as cifar10_input
+#from art.utils import load_cifar10
 # logit_threshs = np.linspace(-300., 30.0, 1000)
 
 class ImageModel():
@@ -38,6 +39,10 @@ class ImageModel():
         return nat_accs[idxs], logit_threshs[idxs]
 
     def predict(self, x):
+        if len(x.shape) ==3:
+            x = np.expand_dims(x, axis=0)
+        assert len(x.shape)==4, x.shape
+        print(x.shape)
         nat_preds = batched_run(self.classifier.predictions, self.classifier.x_input, x, self.sess)
         det_logits = get_det_logits(x, nat_preds, self.base_detectors, self.sess)
         nat_preds[det_logits<= self.th] = -1

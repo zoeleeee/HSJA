@@ -20,6 +20,7 @@ def batched_run(f, x_placeholder, x, sess):
     for i in range(0, x.shape[0], batch_size):
         results.append(
             sess.run(f, feed_dict={x_placeholder: x[i:i + batch_size]}))
+    print(np.array(results).shape)
     return np.concatenate(results)
 
 
