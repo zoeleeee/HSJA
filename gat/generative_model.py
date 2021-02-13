@@ -12,12 +12,11 @@ class ImageModel():
         self.framework = 'tensorflow'
         self.num_classes = 10
 
-        self.sess = tf.Session()
         factory = BaseDetectorFactory()
-        with tf.Session() as sess:
-            factory.restore_base_detectors(self.sess)
-            base_detectors = factory.get_base_detectors()
-            self.bayes_classifier = BayesClassifier(base_detectors)
+        self.sess = tf.Session()
+        factory.restore_base_detectors(self.sess)
+        base_detectors = factory.get_base_detectors()
+        self.bayes_classifier = BayesClassifier(base_detectors)
 
         (_, _), (x_test, y_test), _, _ = load_cifar10()
         self.acc, self.th = self.initialize_threshold(x_test, y_test, accuracy)

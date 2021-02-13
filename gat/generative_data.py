@@ -13,8 +13,8 @@ class ImageData():
         self.clip_min = 0.0
         self.clip_max = 1.0
 
-        self.x_train = x_train
-        self.x_val = x_val
+        self.x_train = x_train.astype(np.float32)
+        self.x_val = x_val.astype(np.float32)
         self.y_train = y_train
         self.y_val = y_val
 
