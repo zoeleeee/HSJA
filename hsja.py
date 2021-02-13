@@ -144,7 +144,6 @@ def decision_function(model, images, params):
     """
     images = clip_image(images, params['clip_min'], params['clip_max'])
     y_pred = model.predict(images)
-    print(y_pred, params['original_label'].shape)
     if params['target_label'] is None:
         return y_pred != params['original_label'] and y_pred > 0
     else:
@@ -283,7 +282,7 @@ def initialize(model, sample, params):
         while True:
             random_noise = np.random.uniform(params['clip_min'], 
                 params['clip_max'], size = params['shape'])
-            success = decision_function(model,random_noise[None], params)[0]
+            success = decision_function(model,random_noise[None], params)
             num_evals += 1
             if success:
                 break
