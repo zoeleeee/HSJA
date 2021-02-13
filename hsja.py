@@ -287,8 +287,9 @@ def initialize(model, sample, params):
             num_evals += 1
             if success:
                 break
-            assert num_evals < 1e4,"Initialization failed! "
-            "Use a misclassified image as `target_image`" 
+            print()
+            # assert num_evals < 1e4,"Initialization failed! "
+            # "Use a misclassified image as `target_image`" 
 
 
         # Binary search to minimize l2 distance to original image.
