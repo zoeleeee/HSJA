@@ -28,15 +28,15 @@ class ImageModel():
         self.label_reps = np.hstack(self.label_reps)
 
         self.th, self.acc = self.initialize_threshold(accuracy)
+        print('model threshold:{}, accuracy:{}'.format(self.th, self.acc))
 
     def initialize_threshold(self, accuracy):
-        scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_art_test.npy')
-        y = np.load('../cifar_update/data/cifar10_art_test_label.npy')
+        scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_cifar10_test.npy')
+        y = np.load('../cifar_update/data/cifar10_test_label.npy')
         if self.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, self.label_reps, y)
         elif self.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, self.label_reps, y)
         for ith in sorted(pred_dists):
             acc = np.sum(pred_dists[correct_idx] <= ith) / len(scores)
-            print(ith, acc)
             if acc >= accuracy:
                 return ith, acc
 
@@ -48,10 +48,12 @@ class ImageModel():
         if len(x.shape) == 3:
             x = np.expand_dims(x, axis=0)
         assert len(x.shape)==4, 'x shape {} error'.format(x.shape)
+        if np.argmin(x.shape[1:]) == 2:
+            x = np.transpose(x, ((0,3,1,2)))
 
         scores = []
         for i in range(len(self.models)):
-            xx = encode(x, i, 32, 0)
+            xx = encode(x, i, 32, 1)
             scores.append(self.models[i](torch.Tensor(xx).cuda(), 1).detach().cpu().numpy())
         scores = np.hstack(scores)
 

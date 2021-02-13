@@ -121,7 +121,7 @@ def encode(data, seed, length, input_bytes):
     data = data.astype(np.uint8)
     assert seed<256, "invalid seed: seed must < 256"
 
-    nb_channal = np.min(data.shape)
+    nb_channal = np.min(data.shape[1:])
     
     output = []
     for i in range(nb_channal):

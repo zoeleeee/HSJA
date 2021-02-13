@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-from model import Model
+from gat.model import Model
 
 logit_threshs = np.linspace(-300., 30.0, 1000)
 
@@ -29,7 +29,7 @@ class BaseDetectorFactory:
         self.__base_detectors = []
         self.__detector_savers = []
         self.num_classes = 10
-        ckpt_dir = 'models/cifar10_ovr_Linf_8.0_iter40_lr0.5_bs300/'
+        ckpt_dir = '../GAT/cifar10/GAT-CIFAR10/models/cifar10_ovr_Linf_8.0_iter40_lr0.5_bs300/'
         for i in range(self.num_classes):
             scope = 'detector-class{}'.format(i)
             self.__base_detectors.append(
