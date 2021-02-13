@@ -1,9 +1,8 @@
 import tensorflow as tf
 import numpy as np
 from gat.model import Model, BayesClassifier
-from eval_utils import *
-import gat.cifar10_input
-
+from gat.eval_utils import *
+from art.utils import load_cifar10
 # logit_threshs = np.linspace(-300., 30.0, 1000)
 
 class ImageModel():
@@ -18,7 +17,7 @@ class ImageModel():
         classifier_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
                                     scope='classifier')
         classifier_saver = tf.train.Saver(var_list=classifier_vars)
-        classifier_checkpoint = 'models/naturally_trained_prefixed_classifier/checkpoint-70000'
+        classifier_checkpoint = '../GAT/cifar10/GAT-CIFAR10/models/naturally_trained_prefixed_classifier/checkpoint-70000'
 
         factory = BaseDetectorFactory()
 
@@ -33,12 +32,11 @@ class ImageModel():
         x_test = x_test.astype(np.float32)
         nat_accs = get_nat_accs(x_test, y_test, logit_threshs, self.classifier,
                             self.base_detectors, self.sess)
-        idxs = (np.abs(nat_accs-accuracy)).argmin()
-        self.acc, self.th = self.initialize_threshold(x_test, y_test, accuracy)
+        idxs = (np.abs(np.array(nat_accs)-accuracy)).argmin()
         return nat_accs[idxs], logit_threshs[idxs]
 
     def predict(self, x):
-        nat_preds = batched_run(classifier.predictions, classifier.x_input, x, sess)
-        det_logits = get_det_logits(x, nat_preds, detectors, sess)
+        nat_preds = batched_run(self.classifier.predictions, self.classifier.x_input, x, self.sess)
+        det_logits = get_det_logits(x, nat_preds, self.base_detectors, self.sess)
         nat_preds[det_logits<= self.th] = -1
         return nat_preds

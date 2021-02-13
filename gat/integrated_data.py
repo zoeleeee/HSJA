@@ -1,3 +1,4 @@
+import numpy as np
 from art.utils import load_cifar10
 
 class ImageData():
