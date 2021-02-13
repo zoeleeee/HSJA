@@ -29,8 +29,10 @@ class ImageModel():
         self.acc, self.th = self.initialize_threshold(accuracy)
 
     def initialize_threshold(self, accuracy):
-        (_, _), (x_test, y_test), _, _ = load_cifar10()
-        x_test = x_test.astype(np.float32)
+        cifar = cifar10_input.CIFAR10Data('../GAT/cifar10/GAT-CIFAR10/cifar10_data')
+        eval_data = cifar.eval_data
+        x_test = eval_data.xs.astype(np.float32)
+        y_test = eval_data.ys.astype(np.int32)
         nat_accs = get_nat_accs(x_test, y_test, logit_threshs, self.classifier,
                             self.base_detectors, self.sess)
         idxs = (np.abs(nat_accs-accuracy)).argmin()
