@@ -42,7 +42,6 @@ class ImageModel():
         if len(x.shape) ==3:
             x = np.expand_dims(x, axis=0)
         assert len(x.shape)==4, x.shape
-        print(x.shape)
         nat_preds = batched_run(self.classifier.predictions, self.classifier.x_input, x, self.sess)
         det_logits = get_det_logits(x, nat_preds, self.base_detectors, self.sess)
         nat_preds[det_logits<= self.th] = -1
