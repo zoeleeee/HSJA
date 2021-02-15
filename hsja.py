@@ -144,8 +144,9 @@ def decision_function(model, images, params):
     """
     images = clip_image(images, params['clip_min'], params['clip_max'])
     y_pred = model.predict(images)
+    y_pred[y_pred == -1] = params['original_label']
     if params['target_label'] is None:
-        return y_pred != params['original_label'] and y_pred > 0
+        return y_pred != params['original_label']
     else:
         return y_pred == params['target_label']
     # prob = model.predict(images)
@@ -288,12 +289,12 @@ def initialize(model, sample, params):
                 break
             if num_evals >= 1e4: break
 
-        if not success:
-            num_evals = 0
-            while True:
+        # if not success:
+            # num_evals = 0
+            # while True:
                 
-            assert num_evals < 1e4,"Initialization failed! "
-            "Use a misclassified image as `target_image`" 
+            # assert num_evals < 1e4,"Initialization failed! "
+            # "Use a misclassified image as `target_image`" 
 
 
         # Binary search to minimize l2 distance to original image.

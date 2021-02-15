@@ -20,7 +20,6 @@ def batched_run(f, x_placeholder, x, sess):
     for i in range(0, x.shape[0], batch_size):
         results.append(
             sess.run(f, feed_dict={x_placeholder: x[i:i + batch_size]}))
-    print(np.array(results).shape)
     return np.concatenate(results)
 
 
@@ -63,6 +62,8 @@ def get_det_logits(x, x_preds, detectors, sess):
     det_logits = np.zeros_like(x_preds)
     for classidx in range(10):
         assign = x_preds == classidx
+        if np.sum(assign) == 0:
+            continue
         det_logits[assign] = batched_run(detectors[classidx].target_logits,
                                          detectors[classidx].x_input,
                                          x[assign], sess)
