@@ -1,6 +1,5 @@
 import numpy as np
-from art.utils import load_cifar10
-
+import gat.cifar10_input as cifar10_input
 class ImageData():
     def __init__(self, dataset_name):
         if dataset_name == 'mnist': 

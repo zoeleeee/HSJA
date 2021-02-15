@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from gat.model import Model, BayesClassifier
 from gat.eval_utils import *
-from art.utils import load_cifar10
+import gat.cifar10_input as cifar10_input
 
 class ImageModel():
     def __init__(self, model_name, dataset_name, accuracy, train = False, load = False, **kwargs):
@@ -18,10 +18,14 @@ class ImageModel():
         base_detectors = factory.get_base_detectors()
         self.bayes_classifier = BayesClassifier(base_detectors)
 
-        (_, _), (x_test, y_test), _, _ = load_cifar10()
         self.acc, self.th = self.initialize_threshold(x_test, y_test, accuracy)
 
-    def initialize_threshold(self, x, y, accuracy):
+    def initialize_threshold(self, accuracy):
+        cifar = cifar10_input.CIFAR10Data('../GAT/cifar10/GAT-CIFAR10/cifar10_data')
+        eval_data = cifar.eval_data
+        x = eval_data.xs.astype(np.float32)
+        y = eval_data.ys.astype(np.int32)
+
         ths = self.bayes_classifier.logit_ths
         nat_accs = self.bayes_classifier.nat_accs(x, y, self.sess)
         idx = (np.abs(np.array(nat_accs) - accuracy)).argmin()
