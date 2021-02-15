@@ -20,7 +20,7 @@ class ImageModel():
 
         self.acc, self.th = self.initialize_threshold(accuracy)
 
-    def initialize_threshold(self, x, y, accuracy):
+    def initialize_threshold(self, accuracy):
         cifar = cifar10_input.CIFAR10Data('../GAT/cifar10/GAT-CIFAR10/cifar10_data')
         eval_data = cifar.eval_data
         x = eval_data.xs.astype(np.float32)
