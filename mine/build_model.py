@@ -40,7 +40,7 @@ class ImageModel():
             if acc >= accuracy:
                 return ith, acc
 
-    def predict(self, x, y=0, metric='hamming'):
+    def predict(self, x, metric='hamming'):
         assert metric in ['hamming', 'euclidean']
 
         if np.max(x) <= 1:
@@ -57,7 +57,8 @@ class ImageModel():
             scores.append(self.models[i](torch.Tensor(xx).cuda(), 1).detach().cpu().numpy())
         scores = np.hstack(scores)
 
-        if metric == 'hamming': dists, _, _ = hamming(scores, 0.9, self.label_reps, y)
-        elif metric == 'euclidean': dists, _, _ = euclidean(scores, 0.9, self.label_reps, y)
-        if dists[0] > self.th: return -1
-        else: return np.argmin(dists[0])
+        if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps, y)
+        elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps, y)
+
+        preds[dists > self.th] = -1
+        return preds

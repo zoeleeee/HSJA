@@ -25,10 +25,10 @@ class ImageData():
 def split_data(x, y, model, num_classes = 10, split_rate = 0.8, sample_per_class = 100):
     np.random.seed(10086)
     scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_cifar10_test.npy')
-    if model.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, model.label_reps, y)
-    elif model.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, model.label_reps, y)
-    correct_idx = correct_idx[pred_dists[correct_idx] <= model.th]
-    print('Accuracy is {}'.format(len(correct_idx)/len(x)))
+    if model.metric == 'hamming': pred_dists, preds = hamming(scores, 0.9, model.label_reps)
+    elif model.metric == 'euclidean': pred_dists, preds = euclidean(scores, .9, model.label_reps)
+    correct_idx = np.logical_and(pred_dists<=model.th, preds==y)
+    print('Accuracy is {}'.format(np.mean(correct_idx)))
     x, y = x[correct_idx], y[correct_idx]
     label_pred = y
 
