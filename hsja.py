@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 import numpy as np
+import copy
 
 def hsja(model, 
     sample, 
@@ -52,7 +53,7 @@ def hsja(model,
     
     """
     # Set parameters
-    original_label = np.argmax(model.predict(sample))
+    original_label = model.predict(sample)
     params = {'clip_max': clip_max, 'clip_min': clip_min, 
                 'shape': sample.shape,
                 'original_label': original_label, 
@@ -144,7 +145,7 @@ def decision_function(model, images, params):
     """
     images = clip_image(images, params['clip_min'], params['clip_max'])
     y_pred = model.predict(images)
-    y_pred[y_pred == -1] = params['original_label']
+    y_pred[y_pred==-1] = params['original_label']
     if params['target_label'] is None:
         return y_pred != params['original_label']
     else:

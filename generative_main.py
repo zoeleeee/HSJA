@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 # from mine.build_model import ImageModel 
 # from mine.load_data import ImageData, split_data
-from gat.integrated_model import ImageModel 
-from gat.integrated_data import ImageData, split_data
+from gat.generative_model import ImageModel 
+from gat.generative_data import ImageData, split_data
 from hsja import hsja
 import numpy as np
 import sys
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--method', type = str, 
-        choices = ['hamming', 'euclidean', 'gat_integrated', 'gat_generative'], 
+        choices = ['hamming', 'euclidean'], 
         default = 'hamming') 
 
     parser.add_argument('--dataset_name', type = str, 
