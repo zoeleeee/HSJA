@@ -280,6 +280,8 @@ def initialize(model, sample, params):
     num_evals = 0
 
     if params['target_image'] is None:
+        raise ValueError('must have target image')
+        return 
         # Find a misclassified random noise.
         while True:
             random_noise = np.random.uniform(params['clip_min'], 
@@ -288,17 +290,9 @@ def initialize(model, sample, params):
             num_evals += 1
             if success:
                 break
-        #     if num_evals >= 1e4: break
+            if num_evals >= 1000:
+                break
 
-        # # if not success:
-        #     # num_evals = 0
-        #     # while True:
-                
-            assert num_evals < 1e4,"Initialization failed! "
-            "Use a misclassified image as `target_image`" 
-
-
-        # Binary search to minimize l2 distance to original image.
         low = 0.0
         high = 1.0
         while high - low > 0.001:
@@ -310,8 +304,7 @@ def initialize(model, sample, params):
             else:
                 low = mid
 
-        initialization = (1 - high) * sample + high * random_noise 
-
+        initialization = (1 - high) * sample + high * random_noise
     else:
         initialization = params['target_image']
 

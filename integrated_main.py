@@ -39,6 +39,17 @@ def construct_model_and_data(args):
                 'clip_max': 1.0,
                 'clip_min': 0.0
                 }
+    if len(y_train.shape) == 2:
+        if y_train.shape[1] > 1: label_train = np.argmax(y_train, axis = 1)
+    if len(y_test.shape) == 2:
+        if y_test.shape[1] > 1: label_train = np.argmax(y_test, axis = 1)
+    x_train_by_class = [x_train[label_train == i] for i in range(model.num_classes)]
+    target_img_by_class = np.array([x_train_by_class[i][0] for i in range(model.num_classes)])
+    np.random.seed(0)
+    target_labels = [np.random.choice([j for j in range(model.num_classes) if j != label]) for label in label_test]
+    target_img_ids = [np.random.choice(len(x_train_by_class[target_label])) for target_label in target_labels]
+    target_images = [x_train_by_class[target_labels[j]][target_img_id] for j, target_img_id in enumerate(target_img_ids)]
+    outputs['target_images'] = target_images
 
     if args.attack_type == 'targeted':
         # Assign target class and image for targeted atttack.
