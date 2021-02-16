@@ -33,10 +33,10 @@ class ImageModel():
     def initialize_threshold(self, accuracy):
         scores = np.load('../cifar_update/preds/cifar10/256.32_cifar10_5_c_cifar10_test.npy')
         y = np.load('../cifar_update/data/cifar10_test_label.npy')
-        if self.metric == 'hamming': pred_dists, correct_idx, error_idxs = hamming(scores, 0.9, self.label_reps, y)
-        elif self.metric == 'euclidean': pred_dists, correct_idx, error_idxs = euclidean(scores, .9, self.label_reps, y)
+        if self.metric == 'hamming': pred_dists, preds = hamming(scores, 0.9, self.label_reps)
+        elif self.metric == 'euclidean': pred_dists, preds = euclidean(scores, .9, self.label_reps)
         for ith in sorted(pred_dists):
-            acc = np.sum(pred_dists[correct_idx] <= ith) / len(scores)
+            acc = np.mean(np.logical_and(pred_dists<ith, preds==y))
             if acc >= accuracy:
                 return ith, acc
 
@@ -57,8 +57,8 @@ class ImageModel():
             scores.append(self.models[i](torch.Tensor(xx).cuda(), 1).detach().cpu().numpy())
         scores = np.hstack(scores)
 
-        if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps, y)
-        elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps, y)
+        if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps)
+        elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps)
 
         preds[dists > self.th] = -1
         return preds
