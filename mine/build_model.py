@@ -11,6 +11,7 @@ class ImageModel():
         self.framework = 'pytorch'
         self.num_classes = 10
         self.metric = 'euclidean'
+        self.device_ids = [0,1,2]
 
         print('Load network...')
         self.nb_model = 3
@@ -18,7 +19,8 @@ class ImageModel():
         self.models = []
         for i in range(self.nb_model):
             model = torch.load(model_file_form.format(i))
-            model = torch.nn.DataParallel(model).cuda()
+            model = torch.nn.DataParallel(model, self.device_ids)
+            model = model.to(f'cuda:{self.device_ids[0]}')
             self.models.append(model.eval())
 
         self.label_reps = []
@@ -42,6 +44,7 @@ class ImageModel():
 
     def predict(self, x, metric='hamming'):
         assert metric in ['hamming', 'euclidean']
+        x = x.to(f'cuda:{self.device_ids[0]}')
 
         if np.max(x) <= 1:
             x = (x*255).astype(np.uint8)
