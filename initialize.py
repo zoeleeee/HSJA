@@ -21,7 +21,7 @@ def main():
 		    success = decision_function(model,random_noise, targ)
 		    if success:
 		        break
-		np.save('random_noise_{}.npy'.format(targ), random_noise)
+		np.save('pics/{}/random_noise_{}.npy'.format(s, targ), random_noise)
 
 if __name__ == '__main__':
 	main()
