@@ -11,7 +11,7 @@ class ImageModel():
         self.framework = 'pytorch'
         self.num_classes = 10
         self.metric = 'euclidean'
-        self.device_ids = [0,1,2]
+        self.device_ids = [0]#,1,2]
 
         print('Load network...')
         self.nb_model = 3
@@ -19,8 +19,6 @@ class ImageModel():
         self.models = []
         for i in range(self.nb_model):
             model = torch.load(model_file_form.format(i))
-            model = torch.nn.DataParallel(model, self.device_ids)
-            model = model.to(f'cuda:{self.device_ids[0]}')
             self.models.append(model.eval())
 
         self.label_reps = []
@@ -37,15 +35,13 @@ class ImageModel():
         y = np.load('../cifar_update/data/cifar10_test_label.npy')
         if self.metric == 'hamming': pred_dists, preds = hamming(scores, 0.9, self.label_reps)
         elif self.metric == 'euclidean': pred_dists, preds = euclidean(scores, .9, self.label_reps)
-        correct_idx = 
         for ith in sorted(pred_dists):
-            acc = np.sum(pred_dists[correct_idx] <= ith) / len(scores)
+            acc = np.mean(np.logical_and(pred_dists<ith, preds==y))
             if acc >= accuracy:
                 return ith, acc
 
     def predict(self, x, metric='hamming'):
         assert metric in ['hamming', 'euclidean']
-        x = x.to(f'cuda:{self.device_ids[0]}')
 
         if np.max(x) <= 1:
             x = (x*255).astype(np.uint8)
@@ -57,12 +53,16 @@ class ImageModel():
 
         scores = []
         for i in range(len(self.models)):
+            model = torch.nn.DataParallel(self.models[i], self.device_ids)
+            model = model.to(f'cuda:{self.device_ids[0]}')
+            
             xx = encode(x, i, 32, 1)
-            scores.append(self.models[i](torch.Tensor(xx).cuda(), 1).detach().cpu().numpy())
+            xx = torch.Tensor(xx).to(f'cuda:{self.device_ids[0]}')
+            scores.append(model(xx, 1).detach().cpu().numpy())
         scores = np.hstack(scores)
 
-        if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps, y)
-        elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps, y)
+        if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps)
+        elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps)
 
         preds[dists > self.th] = -1
         return preds
