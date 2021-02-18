@@ -66,6 +66,7 @@ def hsja(model,
                 'stepsize_search': stepsize_search,
                 'max_num_evals': max_num_evals,
                 'init_num_evals': init_num_evals,
+                'query': 0,
                 'verbose': verbose,
                 }
 
@@ -85,9 +86,12 @@ def hsja(model,
         model, 
         params)
     dist = compute_distance(perturbed, sample, constraint)
-
-    for j in np.arange(params['num_iterations']):
-        params['cur_iter'] = j + 1
+    print('first succ query number: {}'.format(params['query']))
+    j = -1
+    while params['query'] < params['max_num_evals']:
+    # for j in np.arange(params['num_iterations']):
+        j += 1
+        params['cur_iter'] = j+1
 
         # Choose delta.
         delta = select_delta(params, dist_post_update)
@@ -134,7 +138,7 @@ def hsja(model,
         # compute new distance.
         dist = compute_distance(perturbed, sample, constraint)
         if verbose:
-            print('iteration: {:d}, {:s} distance {:.4E}'.format(j+1, constraint, dist))
+            print('iteration {:d}, query {}: {:s} distance {:.4E}'.format(j+1, params['query'], constraint, dist))
 
     return perturbed
 
@@ -143,6 +147,7 @@ def decision_function(model, images, params):
     Decision function output 1 on the desired side of the boundary,
     0 otherwise.
     """
+    params['query'] += 1
     images = clip_image(images, params['clip_min'], params['clip_max'])
     y_pred = model.predict(images)
     y_pred[y_pred==-1] = params['original_label']

@@ -90,6 +90,8 @@ def attack(args):
                             max_num_evals = 1e4,
                             init_num_evals = 100)
 
+        if np.argmin(sample.shape) == 0: sample = np.transform(sample, (1,2,0))
+        if np.argmin(perturbed.shape) == 0: perturbed = np.transform(perturbed, (1,2,0))
         image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
         scipy.misc.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
             args.attack_type, args.constraint, i), image)
