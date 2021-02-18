@@ -7,6 +7,11 @@ if s == 'integrated':
 elif s == 'mine':
 	from mine.build_model import ImageModel 
 
+def clip_image(image, clip_min, clip_max):
+    # Clip an image, or an image batch, with upper and lower threshold.
+    return np.minimum(np.maximum(clip_min, image), clip_max) 
+
+
 def decision_function(model, images, target_label):
     images = clip_image(images, 0, 1)
     y_pred = model.predict(images)
