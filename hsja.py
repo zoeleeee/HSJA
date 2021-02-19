@@ -285,11 +285,11 @@ def initialize(model, sample, params):
     num_evals = 0
 
     if params['target_label'] is None:
-        assert params['target_image'] is None:, 'must have target image'
+        assert params['target_image'] is not None, 'must have target image'
 
         # Find a misclassified random noise.
         if isinstance(params['target_image'], str):
-            random_noise = np.load(params[target_image])[0]
+            random_noise = np.load(params['target_image'])[0]
         assert random_noise.shape == sample.shape, 'noise shape: {}, sample shape: {}'.format(random_noise.shape, sample.shape)
 
         # while True:

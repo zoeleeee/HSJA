@@ -12,25 +12,26 @@ def clip_image(image, clip_min, clip_max):
     return np.minimum(np.maximum(clip_min, image), clip_max) 
 
 
-def decision_function(model, images, target_label):
+def decision_function(model, images):
     images = clip_image(images, 0, 1)
     y_pred = model.predict(images)
-    return y_pred == target_label
+    return y_pred[0]
 
 def main():
+    res = {}
     model = ImageModel('resnet50', 'cifar10', 0.8725, train = False, load = True)
-    for targ in range(10):
-        success = 0
-        eval_num = 0
-        while True:
-            eval_num += 1
-            random_noise = np.random.uniform(0, 1, (1,32,32,3))
-            success = decision_function(model,random_noise, targ)
-            if success:
-                break
-            if eval_num > 1e4: break
-        if success:
-            np.save('pics/{}/random_noise_{}_{}.npy'.format(s, targ, eval_num), random_noise)
+    np.random.seed(188)
+    for i in range(50000):
+        print(i)
+        random_noise = np.random.uniform(0, 1, (32,32,3))
+        y_pred = decision_function(model,random_noise)
+        if y_pred != -1:
+            if y_pred not in res.keys(): res[y_pred] = [list(random_noise)]
+            else: res[y_pred].append(random_noise)
+            if y_pred != 6: np.save('pics/{}/random_noise_{}_{}.npy'.format(s, y_pred, i), random_noise)
+    for i in res.keys(): 
+        print(i, len(res[i]))
+        np.save('pics/{}/random_noise_{}.npy'.format(s, i), res[i])
 
 if __name__ == '__main__':
     main()
