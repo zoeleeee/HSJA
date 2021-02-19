@@ -102,7 +102,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--method', type = str, 
-        choices = ['hamming', 'euclidean'], 
+        choices = ['hamming', 'euclidean', 'gat_integrated', 'gat_generative'], 
         default = 'hamming') 
 
     parser.add_argument('--dataset_name', type = str, 

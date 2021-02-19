@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from mine.build_model import ImageModel 
 from mine.load_data import ImageData, split_data
-#from gat.generative_model import ImageModel 
-#from gat.generative_data import ImageData, split_data
+#from gat.integrated_model import ImageModel 
+#from gat.integrated_data import ImageData, split_data
 from hsja import hsja
 import numpy as np
 import sys
@@ -12,6 +12,7 @@ import pickle
 import argparse
 import scipy
 import itertools
+import imageio
 
 def construct_model_and_data(args):
     """
@@ -38,6 +39,17 @@ def construct_model_and_data(args):
                 'clip_max': 1.0,
                 'clip_min': 0.0
                 }
+    if len(y_train.shape) == 2:
+        if y_train.shape[1] > 1: y_train = np.argmax(y_train, axis = 1)
+    if len(y_test.shape) == 2:
+        if y_test.shape[1] > 1: y_test = np.argmax(y_test, axis = 1)
+    x_train_by_class = [x_train[y_train == i] for i in range(model.num_classes)]
+    target_img_by_class = np.array([x_train_by_class[i][0] for i in range(model.num_classes)])
+    np.random.seed(0)
+    target_labels = [np.random.choice([j for j in range(model.num_classes) if j != label]) for label in y_test]
+    target_img_ids = [np.random.choice(len(x_train_by_class[target_label])) for target_label in target_labels]
+    target_images = [x_train_by_class[target_labels[j]][target_img_id] for j, target_img_id in enumerate(target_img_ids)]
+    outputs['target_images'] = target_images
 
     if args.attack_type == 'targeted':
         # Assign target class and image for targeted atttack.
@@ -75,7 +87,7 @@ def attack(args):
             target_image = target_images[i]
         else:
             target_label = None
-            target_image = None
+            target_image = outputs['target_images'][i]
 
         print('attacking the {}th sample...'.format(i))
 
@@ -92,8 +104,10 @@ def attack(args):
                             max_num_evals = 1e4,
                             init_num_evals = 100)
 
+        if np.argmin(sample.shape) == 0: sample = np.transpose(sample, (1,2,0))
+        if np.argmin(perturbed.shape) == 0: perturbed = np.transpose(perturbed, (1,2,0))
         image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-        scipy.misc.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
+        imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
             args.attack_type, args.constraint, i), image)
 
 
@@ -101,7 +115,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--method', type = str, 
-        choices = ['hamming', 'euclidean'], 
+        choices = ['hamming', 'euclidean', 'gat_integrated', 'gat_generative'], 
         default = 'hamming') 
 
     parser.add_argument('--dataset_name', type = str, 

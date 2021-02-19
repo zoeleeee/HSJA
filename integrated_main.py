@@ -87,7 +87,7 @@ def attack(args):
             target_image = target_images[i]
         else:
             target_label = None
-            target_image = target_images[i]
+            target_image = outputs['target_images'][i]
 
         print('attacking the {}th sample...'.format(i))
 

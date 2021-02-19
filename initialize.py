@@ -15,7 +15,6 @@ def clip_image(image, clip_min, clip_max):
 def decision_function(model, images, target_label):
     images = clip_image(images, 0, 1)
     y_pred = model.predict(images)
-    y_pred[y_pred==-1] = original_label
     return y_pred == target_label
 
 def main():
