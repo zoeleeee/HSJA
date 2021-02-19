@@ -142,12 +142,12 @@ def hsja(model,
 
     return perturbed
 
-def decision_function(model, images, params):
+def decision_function(model, images, params, valid=1):
     """
     Decision function output 1 on the desired side of the boundary,
     0 otherwise.
     """
-    params['query'] += 1
+    params['query'] += valid
     images = clip_image(images, params['clip_min'], params['clip_max'])
     y_pred = model.predict(images)
     y_pred[y_pred==-1] = params['original_label']
@@ -284,26 +284,30 @@ def initialize(model, sample, params):
     success = 0
     num_evals = 0
 
-    if params['target_image'] is None:
-        raise ValueError('must have target image')
-        return 
+    if params['target_label'] is None:
+        assert params['target_image'] is None:, 'must have target image'
+
         # Find a misclassified random noise.
-        while True:
-            random_noise = np.random.uniform(params['clip_min'], 
-                params['clip_max'], size = params['shape'])
-            success = decision_function(model,random_noise[None], params)
-            num_evals += 1
-            if success:
-                break
-            if num_evals >= 1000:
-                break
+        if isinstance(params['target_image'], str):
+            random_noise = np.load(params[target_image])[0]
+        assert random_noise.shape == sample.shape, 'noise shape: {}, sample shape: {}'.format(random_noise.shape, sample.shape)
+
+        # while True:
+        #     random_noise = np.random.uniform(params['clip_min'], 
+        #         params['clip_max'], size = params['shape'])
+        #     success = decision_function(model,random_noise[None], params)
+        #     num_evals += 1
+        #     if success:
+        #         break
+        #     if num_evals >= 1000:
+        #         break
 
         low = 0.0
         high = 1.0
         while high - low > 0.001:
             mid = (high + low) / 2.0
             blended = (1 - mid) * sample + mid * random_noise 
-            success = decision_function(model, blended[None], params)
+            success = decision_function(model, blended[None], params, valid=0)
             if success:
                 high = mid
             else:
