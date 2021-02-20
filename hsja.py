@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 import numpy as np
+import imageio
 import copy
 
 def hsja(model, 
@@ -72,7 +73,6 @@ def hsja(model,
                 'data_model': data_model,
                 'idx': idx
                 }
-
     # Set binary search threshold.
     if params['constraint'] == 'l2':
         params['theta'] = params['gamma'] / (np.sqrt(params['d']) * params['d'])
@@ -153,7 +153,7 @@ def save_image(sample, perturbed, params):
     if np.argmin(sample.shape) == 0: sample = np.transpose(sample, (1,2,0))
     if np.argmin(perturbed.shape) == 0: perturbed = np.transpose(perturbed, (1,2,0))
     image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-    imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(params['data_model'], 'untargeted' if params['target_label'] is None else 'targeted'  params['constraint'], params['idx']), image)
+    imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(params['data_model'], 'untargeted' if params['target_label'] is None else 'targeted',  params['constraint'], params['idx']), image)
 
 def decision_function(model, images, params, valid=1):
     """
