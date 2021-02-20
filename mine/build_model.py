@@ -26,6 +26,7 @@ class ImageModel():
             np.random.seed(i*5)
             self.label_reps.append(np.random.permutation(np.load('../cifar_update/data/5_label_permutation.npy')))
         self.label_reps = np.hstack(self.label_reps)
+        print(self.label_reps)
 
         self.th, self.acc = self.initialize_threshold(accuracy)
         print('model threshold:{}, accuracy:{}'.format(self.th, self.acc))
