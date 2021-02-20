@@ -55,12 +55,15 @@ class ImageModel():
         for i in range(len(self.models)):
             model = torch.nn.DataParallel(self.models[i], self.device_ids)
             model = model.to(f'cuda:{self.device_ids[0]}')
-            
-            xx = encode(x, i, 32, 1)
-            xx = torch.Tensor(xx).to(f'cuda:{self.device_ids[0]}')
-            scores.append(model(xx, 1).detach().cpu().numpy())
+            score = []
+            for ii in range(0, len(x), 50):
+                batch_x = x[ii:min(ii+10, len(x))]
+                       
+                xx = encode(batch_x, i, 32, 1)
+                xx = torch.Tensor(xx).to(f'cuda:{self.device_ids[0]}')
+                score.append(model(xx, 1).detach().cpu().numpy())
+            scores.append(np.vstack(score))
         scores = np.hstack(scores)
-
         if metric == 'hamming': dists, preds = hamming(scores, 0.9, self.label_reps)
         elif metric == 'euclidean': dists, preds = euclidean(scores, 0.9, self.label_reps)
 

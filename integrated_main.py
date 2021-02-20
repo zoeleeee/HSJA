@@ -98,7 +98,7 @@ def attack(args):
         print('attacking the {}th sample...'.format(i))
 
         perturbed = hsja(model, 
-                            sample, data_model, i,
+                            sample,
                             clip_max = 1, 
                             clip_min = 0, 
                             constraint = args.constraint, 
@@ -110,9 +110,9 @@ def attack(args):
                             max_num_evals = 1e4,
                             init_num_evals = 100)
 
-        # image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-        # imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
-        #     args.attack_type, args.constraint, i), image)
+        image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
+        imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
+            args.attack_type, args.constraint, i), image)
 
 
 if __name__ == '__main__':

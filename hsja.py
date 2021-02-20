@@ -4,7 +4,7 @@ import imageio
 import copy
 
 def hsja(model, 
-    sample, data_model, idx,
+    sample,
     clip_max = 1, 
     clip_min = 0, 
     constraint = 'l2', 
@@ -70,8 +70,7 @@ def hsja(model,
                 'query': 0,
                 'verbose': verbose,
                 'best_dist': 1e4,
-                'data_model': data_model,
-                'idx': idx
+                'best_perturbed': None
                 }
     # Set binary search threshold.
     if params['constraint'] == 'l2':
@@ -141,19 +140,15 @@ def hsja(model,
         # compute new distance.
         dist = compute_distance(perturbed, sample, constraint)
         if dist < params['best_dist']:
-            save_image(sample, perturbed, params)
+            params['best_perturbed'] = perturbed
             params['best_dist'] = dist
 
         if verbose:
             print('iteration {:d}, query {}: {:s} distance {:.4E}'.format(j+1, params['query'], constraint, dist))
 
-    return perturbed
+    print('smallest perturb distance:{}'.format(params['best_dist']))
+    return params['best_perturbed']
 
-def save_image(sample, perturbed, params):
-    if np.argmin(sample.shape) == 0: sample = np.transpose(sample, (1,2,0))
-    if np.argmin(perturbed.shape) == 0: perturbed = np.transpose(perturbed, (1,2,0))
-    image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-    imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(params['data_model'], 'untargeted' if params['target_label'] is None else 'targeted',  params['constraint'], params['idx']), image)
 
 def decision_function(model, images, params, valid=1):
     """
