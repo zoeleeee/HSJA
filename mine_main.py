@@ -115,10 +115,10 @@ def attack(args):
         if np.argmin(sample.shape) == 0: sample = np.transpose(sample, (1,2,0))
         if np.argmin(perturbed.shape) == 0: perturbed = np.transpose(perturbed, (1,2,0))
         image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-        imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, args.attack_type,  args.constraint, i, image)
-
+        imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, args.attack_type,  args.constraint, i), image)
 
 #python mine_main.py --constraint l2 --attack_type untargeted --num_samples 5 --method euclidean --num_iterations 10000 --acuracy 0.8725
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 

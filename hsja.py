@@ -201,7 +201,6 @@ def approximate_gradient(model, sample, num_evals, delta, params):
     decisions = decision_function(model, perturbed, params)
     decision_shape = [len(decisions)] + [1] * len(params['shape'])
     fval = 2 * decisions.astype(float).reshape(decision_shape) - 1.0
-
     # Baseline subtraction (when fval differs)
     if np.mean(fval) == 1.0: # label changes. 
         gradf = np.mean(rv, axis = 0)

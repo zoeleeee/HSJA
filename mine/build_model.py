@@ -58,7 +58,7 @@ class ImageModel():
             model = model.to(f'cuda:{self.device_ids[0]}')
             score = []
             for ii in range(0, len(x), 50):
-                batch_x = x[ii:min(ii+10, len(x))]
+                batch_x = x[ii:min(ii+50, len(x))]
                        
                 xx = encode(batch_x, i, 32, 1)
                 xx = torch.Tensor(xx).to(f'cuda:{self.device_ids[0]}')
