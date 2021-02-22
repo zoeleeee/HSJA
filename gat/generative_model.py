@@ -12,8 +12,15 @@ class ImageModel():
         self.framework = 'tensorflow'
         self.num_classes = 10
 
+        robust_classifier = Model(mode='eval', var_scope='classifier')
+        classifier_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
+                                    scope='classifier')
+        classifier_saver = tf.train.Saver(var_list=classifier_vars)
+        classifier_checkpoint = 'models/adv_trained_prefixed_classifier/checkpoint-70000'
+
         factory = BaseDetectorFactory()
         self.sess = tf.Session()
+        classifier_saver.restore(self.sess, classifier_checkpoint)
         factory.restore_base_detectors(self.sess)
         base_detectors = factory.get_base_detectors()
         self.bayes_classifier = BayesClassifier(base_detectors)
@@ -32,7 +39,6 @@ class ImageModel():
         return nat_accs[idx], ths[idx]
 
     def predict(self, x):
-        logits = self.bayes_classifier.forward(x)
         logits = self.bayes_classifier.batched_run(logits, x, self.sess)
         preds = np.argmax(logits, axis=1)
         p_x = np.max(logits, axis=1)

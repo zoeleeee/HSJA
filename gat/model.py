@@ -255,7 +255,7 @@ class BayesClassifier(object):
     return tf.stack([net.forward(x)[:, net.target_class] for net in self.detectors], axis=1)
 
   def batched_run(self, f, x, sess):
-    batch_size = 1000
+    batch_size = 100
     results = []
     for i in range(0, x.shape[0], batch_size):
       results.append(sess.run(f, feed_dict={self.x_input: x[i: i+batch_size]}))
