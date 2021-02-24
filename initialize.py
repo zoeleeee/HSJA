@@ -32,7 +32,7 @@ def main():
         if y_pred != -1:
             if y_pred not in res.keys(): res[y_pred] = [list(random_noise[0])]
             else: res[y_pred].append(random_noise[0])
-            # if y_pred != 6: np.save('pics/{}/random_noise_{}_{}.npy'.format(s, y_pred, i), random_noise)
+            np.save('pics/{}/random_noise_{}_1.npy'.format(s, y_pred), random_noise)
     for i in res.keys(): 
         print(i, len(res[i]))
         np.save('pics/{}/random_noise_{}.npy'.format(s, i), res[i])
@@ -44,5 +44,5 @@ def check(file):
     print(y_pred)
 
 if __name__ == '__main__':
-    # main()
-    check(sys.argv[-1])
+    main()
+    # check()

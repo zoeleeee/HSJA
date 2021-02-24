@@ -39,8 +39,12 @@ class ImageModel():
         return nat_accs[idx], ths[idx]
 
     def predict(self, x):
+        for i in range(0, len(x), 100):
+            xx = x[i:min(i+100, len(x))]
+            logits.append(self.bayes_classifier.forward(x))
+        logits = np.vstack(logits)
         logits = self.bayes_classifier.batched_run(logits, x, self.sess)
         preds = np.argmax(logits, axis=1)
         p_x = np.max(logits, axis=1)
-        preds[p_x>self.th] = -1
+        preds[p_x<=self.th] = -1
         return preds
