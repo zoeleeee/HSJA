@@ -38,11 +38,13 @@ def main():
         np.save('pics/{}/random_noise_{}.npy'.format(s, i), res[i])
 
 def check(file):
-    random_noise = np.load(file)
-    model = ImageModel('resnet50', 'cifar10', 0.8725, train = False, load = True)
-    y_pred = decision_function(model,random_noise)
-    print(y_pred)
+    adv_file = 'pics/generative/random_{}.npy'
+    for i in range(10):
+        random_noise = np.load(adv_file.format(i))
+        model = ImageModel('resnet50', 'cifar10', 0.8725, train = False, load = True)
+        y_pred = decision_function(model,random_noise)
+        print(i, y_pred)
 
 if __name__ == '__main__':
     # main()
-    check(sys.argv[-1])
+    check(sys.argv[-2])
