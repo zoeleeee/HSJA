@@ -37,5 +37,12 @@ def main():
         print(i, len(res[i]))
         np.save('pics/{}/random_noise_{}.npy'.format(s, i), res[i])
 
+def check(file):
+    random_noise = np.load(file)
+    model = ImageModel('resnet50', 'cifar10', 0.8725, train = False, load = True)
+    y_pred = decision_function(model,random_noise)
+    print(y_pred)
+
 if __name__ == '__main__':
-    main()
+    # main()
+    check(sys.argv[-1])
