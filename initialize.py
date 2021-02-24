@@ -46,5 +46,5 @@ def check(file):
         print(i, y_pred)
 
 if __name__ == '__main__':
-    # main()
-    check(sys.argv[-2])
+    main()
+    # check()

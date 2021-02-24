@@ -42,5 +42,5 @@ class ImageModel():
         logits = self.bayes_classifier.batched_run(self.bayes_classifier.logits, x, self.sess)
         preds = np.argmax(logits, axis=1)
         p_x = np.max(logits, axis=1)
-        preds[p_x>self.th] = -1
+        preds[p_x<=self.th] = -1
         return preds
