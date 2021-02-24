@@ -40,6 +40,11 @@ def construct_model_and_data(args):
                 'clip_min': 0.0
                 }
 
+    random_noise = {2:'pics/generative/random_noise_2_1.npy', 6:'pics/generative/random_noise_6_1.npy'}
+    np.random.seed(0)
+    target_images = [np.random.choice([random_noise[j] for j in random_noise.keys() if j != label]) for label in y_test]
+    outputs['target_images'] = target_images
+
     if args.attack_type == 'targeted':
         # Assign target class and image for targeted atttack.
         label_train = np.argmax(y_train, axis = 1)
@@ -76,7 +81,7 @@ def attack(args):
             target_image = target_images[i]
         else:
             target_label = None
-            target_image = None
+            target_image = outputs['target_images'][i]
 
         print('attacking the {}th sample...'.format(i))
 
