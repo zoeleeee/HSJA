@@ -24,15 +24,15 @@ def decision_function(model, images):
 def main():
     res = {}
     model = ImageModel('resnet50', 'cifar10', 0.8725, train = False, load = True)
-    np.random.seed(1885)
-    for i in range(10000):
+    np.random.seed(188)
+    for i in range(1000000):
         print(i)
         random_noise = np.random.uniform(0, 1, (1,32,32,3)).astype(np.float32)
         y_pred = decision_function(model,random_noise)
         if y_pred != -1:
             if y_pred not in res.keys(): res[y_pred] = [list(random_noise[0])]
             else: res[y_pred].append(random_noise[0])
-            # if y_pred != 6: np.save('pics/{}/random_noise_{}_{}.npy'.format(s, y_pred, i), random_noise)
+            np.save('pics/{}/random_noise_{}_1.npy'.format(s, y_pred), random_noise)
     for i in res.keys(): 
         print(i, len(res[i]))
         np.save('pics/{}/random_noise_{}.npy'.format(s, i), res[i])

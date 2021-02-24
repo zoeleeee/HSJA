@@ -10,7 +10,7 @@ import pickle
 import argparse
 import scipy
 import itertools
-
+import imageio
 def construct_model_and_data(args):
     """
     Load model and data on which the attack is carried out.
@@ -38,7 +38,7 @@ def construct_model_and_data(args):
                 }
 
     #initialize random noise
-    random_noise = {2:'pics/integrated/random_noise_2_1.npy', 6:'pics/integrated/random_noise_6_1.npy'}
+    random_noise = {2:'pics/robust/random_noise_2_1.npy', 6:'pics/robust/random_noise_6_1.npy'}
     np.random.seed(0)
     target_images = [np.random.choice([random_noise[j] for j in random_noise.keys() if j != label]) for label in y_test]
     outputs['target_images'] = target_images
@@ -100,7 +100,7 @@ def attack(args):
         if np.argmin(sample.shape) == 0: sample = np.transpose(sample, (1,2,0))
         if np.argmin(perturbed.shape) == 0: perturbed = np.tranpose(perturbed, (1,2,0))
         image = np.concatenate([sample, np.zeros((32,8,3)), perturbed], axis = 1)
-        scipy.misc.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
+        imageio.imsave('{}/figs/{}-{}-{}.jpg'.format(data_model, 
             args.attack_type, args.constraint, i), image)
 
 
